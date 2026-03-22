@@ -22,5 +22,8 @@ public class BonusPickup : MonoBehaviour
         var c = GetComponent<Collider>();
         if (c != null)
             c.isTrigger = true;
+
+        if (definition == null)
+            Debug.LogWarning($"[{nameof(BonusPickup)}] Assign a BonusPickupDefinition on '{name}' or the pickup will have no effect.");
     }
 }

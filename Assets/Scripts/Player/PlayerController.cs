@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
@@ -24,6 +25,8 @@ public class PlayerController : MonoBehaviour
 
     private Tween jumpTween;
     private Tween swapLaneTween;
+
+    private readonly List<Collider> _pendingTriggers = new List<Collider>(8);
 
     #region Initialization
 
@@ -76,9 +79,25 @@ public class PlayerController : MonoBehaviour
         KillAllTweens();
     }
 
+    public float GetLaneWorldX(int laneIndex)
+    {
+        if (_lines == null || laneIndex < 0 || laneIndex >= _lines.Length)
+            return 0f;
+        return _lines[laneIndex].x;
+    }
+
+    public int GetLaneCount() => _lines != null ? _lines.Length : 0;
+
     private void FixedUpdate()
     {
-        if (!GameManager.Instance.IsGameRunning() || !playerData.IsAlive)
+        if (_pendingTriggers.Count > 0)
+        {
+            if (GameManager.Instance != null && GameManager.Instance.IsGameRunning() && playerData != null && playerData.IsAlive)
+                ProcessPendingTriggers();
+            _pendingTriggers.Clear();
+        }
+
+        if (!GameManager.Instance.IsGameRunning() || playerData == null || !playerData.IsAlive)
             return;
 
         CheckGround();
@@ -228,9 +247,26 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (collision.TryGetComponent(out BonusPickup pickup))
+        if (collision != null)
+            _pendingTriggers.Add(collision);
+    }
+
+    private void ProcessPendingTriggers()
+    {
+        for (int i = 0; i < _pendingTriggers.Count; i++)
         {
+            Collider col = _pendingTriggers[i];
+            if (col == null)
+                continue;
+
+            var pickup = col.GetComponent<BonusPickup>() ?? col.GetComponentInParent<BonusPickup>();
+            if (pickup == null)
+                continue;
+
             var def = pickup.Definition;
+            if (def == null)
+                Debug.LogWarning($"[{nameof(PlayerController)}] Bonus '{pickup.name}' has no definition — skipped effect.");
+
             if (def != null && playerData != null)
             {
                 playerData.ApplyBonus(def);
@@ -238,15 +274,22 @@ public class PlayerController : MonoBehaviour
             }
 
             Destroy(pickup.gameObject);
-            return;
         }
 
-        if (collision.TryGetComponent(out Obstacle obstacle))
+        for (int i = 0; i < _pendingTriggers.Count; i++)
         {
+            Collider col = _pendingTriggers[i];
+            if (col == null)
+                continue;
+
+            var obstacle = col.GetComponent<Obstacle>() ?? col.GetComponentInParent<Obstacle>();
+            if (obstacle == null)
+                continue;
+
             if (playerData != null && playerData.IsInvulnerable)
             {
                 obstacle.Break();
-                return;
+                continue;
             }
 
             playerData?.TakeDamage(obstacle.GetDamage());
