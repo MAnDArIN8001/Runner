@@ -17,6 +17,7 @@ public class ObstacleSpawner : MonoBehaviour
     
     private PlayerController playerController;
     private List<GameObject> activePlatforms = new List<GameObject>();
+    private List<GameObject> activeBonusPickups = new List<GameObject>();
     private float lastPlatformZ = 0f;
     
     private void Start()
@@ -43,6 +44,13 @@ public class ObstacleSpawner : MonoBehaviour
         }
 
         activePlatforms.Clear();
+        for (int i = activeBonusPickups.Count - 1; i >= 0; i--)
+        {
+            if (activeBonusPickups[i] != null)
+                Destroy(activeBonusPickups[i]);
+        }
+
+        activeBonusPickups.Clear();
         playerController = PlayerController.Instance;
         lastPlatformZ = 0f;
         GenerateInitialWorld();
@@ -85,6 +93,21 @@ public class ObstacleSpawner : MonoBehaviour
             {
                 Destroy(activePlatforms[i]);
                 activePlatforms.RemoveAt(i);
+            }
+        }
+
+        for (int i = activeBonusPickups.Count - 1; i >= 0; i--)
+        {
+            if (activeBonusPickups[i] == null)
+            {
+                activeBonusPickups.RemoveAt(i);
+                continue;
+            }
+
+            if (activeBonusPickups[i].transform.position.z < playerZ + despawnDistance)
+            {
+                Destroy(activeBonusPickups[i]);
+                activeBonusPickups.RemoveAt(i);
             }
         }
     }
@@ -140,11 +163,12 @@ public class ObstacleSpawner : MonoBehaviour
         float[] lanes = { -2f, 0f, 2f };
         float laneX = lanes[Random.Range(0, lanes.Length)];
         float y = config.platformHeight + 0.75f;
+        Vector3 worldPos = platform.transform.TransformPoint(new Vector3(laneX, y, 0f));
 
-        GameObject pickupGo = Instantiate(entry.prefab, platform.transform);
+        GameObject pickupGo = Instantiate(entry.prefab);
         pickupGo.name = entry.prefab.name;
-        pickupGo.transform.localPosition = new Vector3(laneX, y, 0f);
-        pickupGo.transform.localRotation = Quaternion.identity;
+        pickupGo.transform.SetPositionAndRotation(worldPos, Quaternion.identity);
+        activeBonusPickups.Add(pickupGo);
     }
     
     private void SpawnObstaclesOnPlatform(GameObject platform)
