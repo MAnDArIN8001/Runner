@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerData playerData;
 
     private Rigidbody rb;
+    private Vector3 _spawnWorldPosition;
 
     private Tween jumpTween;
     private Tween swapLaneTween;
@@ -55,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
         Vector3 startPos = transform.position;
         transform.position = new Vector3(_lines[_currentLine].x, startPos.y, startPos.z);
+        _spawnWorldPosition = transform.position;
 
         jumpCount = 0;
         canJump = true;
@@ -209,8 +211,7 @@ public class PlayerController : MonoBehaviour
 
         _currentLine = _lines.Length / 2;
 
-        Vector3 pos = transform.position;
-        transform.position = new Vector3(_lines[_currentLine].x, pos.y, pos.z);
+        transform.position = new Vector3(_lines[_currentLine].x, _spawnWorldPosition.y, _spawnWorldPosition.z);
 
         _currentState = PlayerState.Move;
 

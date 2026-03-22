@@ -1,5 +1,14 @@
 using UnityEngine;
 
+/// <summary>High-level single-scene flow for menus, play, pause, and game over.</summary>
+public enum GameFlowState
+{
+    MainMenu,
+    Playing,
+    Paused,
+    GameOver
+}
+
 /// <summary>
 /// Centralized event system for the game using delegates.
 /// All game events are defined here for event-based architecture.
@@ -54,6 +63,15 @@ public static class GameEvents
     
     public delegate void GameSpeedChangedDelegate(float newSpeed);
     public static event GameSpeedChangedDelegate OnGameSpeedChanged;
+
+    public delegate void GameFlowStateChangedDelegate(GameFlowState state);
+    public static event GameFlowStateChangedDelegate OnGameFlowStateChanged;
+
+    public delegate void HighScoreChangedDelegate(int highScore);
+    public static event HighScoreChangedDelegate OnHighScoreChanged;
+
+    public delegate void GameOverDelegate(int finalScore, bool isNewHighScore);
+    public static event GameOverDelegate OnGameOver;
     
     // Invoke methods for external callers
     public static void InvokePlayerMoved(int laneIndex) => OnPlayerMoved?.Invoke(laneIndex);
@@ -72,4 +90,7 @@ public static class GameEvents
     public static void InvokeObstacleDestroyed(Obstacle obstacle) => OnObstacleDestroyed?.Invoke(obstacle);
     public static void InvokeScoreChanged(int newScore) => OnScoreChanged?.Invoke(newScore);
     public static void InvokeGameSpeedChanged(float newSpeed) => OnGameSpeedChanged?.Invoke(newSpeed);
+    public static void InvokeGameFlowStateChanged(GameFlowState state) => OnGameFlowStateChanged?.Invoke(state);
+    public static void InvokeHighScoreChanged(int highScore) => OnHighScoreChanged?.Invoke(highScore);
+    public static void InvokeGameOver(int finalScore, bool isNewHighScore) => OnGameOver?.Invoke(finalScore, isNewHighScore);
 }

@@ -33,6 +33,21 @@ public class ObstacleSpawner : MonoBehaviour
         GenerateInitialWorld();
     }
     
+    /// <summary>Clears spawned platforms and rebuilds ahead of the player (soft restart without reloading the scene).</summary>
+    public void ResetAndRegenerateWorld()
+    {
+        for (int i = activePlatforms.Count - 1; i >= 0; i--)
+        {
+            if (activePlatforms[i] != null)
+                Destroy(activePlatforms[i]);
+        }
+
+        activePlatforms.Clear();
+        playerController = PlayerController.Instance;
+        lastPlatformZ = 0f;
+        GenerateInitialWorld();
+    }
+
     private void GenerateInitialWorld()
     {
         if (playerController == null) return;
