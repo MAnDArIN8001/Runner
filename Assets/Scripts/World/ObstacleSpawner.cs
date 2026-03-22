@@ -160,10 +160,25 @@ public class ObstacleSpawner : MonoBehaviour
         if (entry?.prefab == null)
             return;
 
-        float[] lanes = { -2f, 0f, 2f };
-        float laneX = lanes[Random.Range(0, lanes.Length)];
-        float y = config.platformHeight + 0.75f;
-        Vector3 worldPos = platform.transform.TransformPoint(new Vector3(laneX, y, 0f));
+        float laneWorldX;
+        var pc = PlayerController.Instance;
+        int laneCount = pc != null ? pc.GetLaneCount() : 0;
+        if (laneCount > 0)
+            laneWorldX = pc.GetLaneWorldX(Random.Range(0, laneCount));
+        else
+        {
+            float[] fallback = { -2f, 0f, 2f };
+            laneWorldX = fallback[Random.Range(0, fallback.Length)];
+        }
+
+        Vector3 platPos = platform.transform.position;
+        Collider platCol = platform.GetComponent<Collider>();
+        if (platCol == null)
+            platCol = platform.GetComponentInChildren<Collider>();
+
+        float surfaceTopY = platCol != null ? platCol.bounds.max.y : platPos.y + config.platformHeight;
+        const float hoverAboveTrack = 0.4f;
+        Vector3 worldPos = new Vector3(laneWorldX, surfaceTopY + hoverAboveTrack, platPos.z);
 
         GameObject pickupGo = Instantiate(entry.prefab);
         pickupGo.name = entry.prefab.name;
