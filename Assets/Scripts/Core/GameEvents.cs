@@ -21,6 +21,12 @@ public static class GameEvents
     
     public delegate void PlayerHealthChangedDelegate(int currentHealth, int maxHealth);
     public static event PlayerHealthChangedDelegate OnPlayerHealthChanged;
+
+    public delegate void BonusPickedUpDelegate(BonusPickupDefinition bonus);
+    public static event BonusPickedUpDelegate OnBonusPickedUp;
+
+    public delegate void PlayerInvulnerabilityChangedDelegate(bool active, float timeRemaining);
+    public static event PlayerInvulnerabilityChangedDelegate OnPlayerInvulnerabilityChanged;
     
     // Game events
     public delegate void GameStartedDelegate();
@@ -55,6 +61,9 @@ public static class GameEvents
     public static void InvokePlayerDamaged(int damage, int remainingHealth) => OnPlayerDamaged?.Invoke(damage, remainingHealth);
     public static void InvokePlayerDied() => OnPlayerDied?.Invoke();
     public static void InvokePlayerHealthChanged(int currentHealth, int maxHealth) => OnPlayerHealthChanged?.Invoke(currentHealth, maxHealth);
+    public static void InvokeBonusPickedUp(BonusPickupDefinition bonus) => OnBonusPickedUp?.Invoke(bonus);
+    public static void InvokePlayerInvulnerabilityChanged(bool active, float timeRemaining) =>
+        OnPlayerInvulnerabilityChanged?.Invoke(active, timeRemaining);
     public static void InvokeGameStarted() => OnGameStarted?.Invoke();
     public static void InvokeGamePaused() => OnGamePaused?.Invoke();
     public static void InvokeGameResumed() => OnGameResumed?.Invoke();

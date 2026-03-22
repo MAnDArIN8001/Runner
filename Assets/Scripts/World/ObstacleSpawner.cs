@@ -107,7 +107,29 @@ public class ObstacleSpawner : MonoBehaviour
         
         // Track this platform
         activePlatforms.Add(platformGO);
+        TrySpawnBonusPickup(platformGO);
         GameEvents.InvokeObstacleSpawned(null);
+    }
+
+    private void TrySpawnBonusPickup(GameObject platform)
+    {
+        if (config.bonusPrefabs == null || config.bonusPrefabs.Length == 0)
+            return;
+        if (Random.value > config.bonusSpawnChancePerPlatform)
+            return;
+
+        var entry = config.bonusPrefabs[Random.Range(0, config.bonusPrefabs.Length)];
+        if (entry?.prefab == null)
+            return;
+
+        float[] lanes = { -2f, 0f, 2f };
+        float laneX = lanes[Random.Range(0, lanes.Length)];
+        float y = config.platformHeight + 0.75f;
+
+        GameObject pickupGo = Instantiate(entry.prefab, platform.transform);
+        pickupGo.name = entry.prefab.name;
+        pickupGo.transform.localPosition = new Vector3(laneX, y, 0f);
+        pickupGo.transform.localRotation = Quaternion.identity;
     }
     
     private void SpawnObstaclesOnPlatform(GameObject platform)

@@ -44,3 +44,7 @@ MonoBehaviour:
   platformWidth: 6
   platformHeight: 0.5
   platformLength: 3
+  bonusPrefabs:
+  - prefab: {fileID: 8833221144667755, guid: e7b1a6f325849c031f2a3b4c5d6e7f809, type: 3}
+  - prefab: {fileID: 9933221144667755, guid: f8c2b7a436950d142a3b4c5d6e7f8091a, type: 3}
+  bonusSpawnChancePerPlatform: 0.22

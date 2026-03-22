@@ -19,6 +19,16 @@ public class ObstacleConfig : ScriptableObject
     [SerializeField] public GameObject[] platformPrefabs;  // List of pre-made platform prefabs with obstacles
     
     [SerializeField] public ObstacleType[] obstacleTypes = new ObstacleType[2];
+
+    [System.Serializable]
+    public class BonusPrefabEntry
+    {
+        public GameObject prefab;
+    }
+
+    [Header("Bonus Pickups")]
+    [SerializeField] public BonusPrefabEntry[] bonusPrefabs = System.Array.Empty<BonusPrefabEntry>();
+    [SerializeField] [Range(0f, 1f)] public float bonusSpawnChancePerPlatform = 0.22f;
     
     [Header("Spawn Settings")]
     [SerializeField] public float platformSpawnInterval = 2f;

@@ -227,10 +227,28 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider collision)
     {
+        if (collision.TryGetComponent(out BonusPickup pickup))
+        {
+            var def = pickup.Definition;
+            if (def != null && playerData != null)
+            {
+                playerData.ApplyBonus(def);
+                GameEvents.InvokeBonusPickedUp(def);
+            }
+
+            Destroy(pickup.gameObject);
+            return;
+        }
+
         if (collision.TryGetComponent(out Obstacle obstacle))
         {
-            playerData.TakeDamage(obstacle.GetDamage());
-            
+            if (playerData != null && playerData.IsInvulnerable)
+            {
+                obstacle.Break();
+                return;
+            }
+
+            playerData?.TakeDamage(obstacle.GetDamage());
             obstacle.Break();
         }
     }
