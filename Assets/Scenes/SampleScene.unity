@@ -1455,6 +1455,7 @@ GameObject:
   - component: {fileID: 1967809151}
   - component: {fileID: 1967809150}
   - component: {fileID: 1967809153}
+  - component: {fileID: 1967809154}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1616,6 +1617,26 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1967809154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967809145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3f2c8e11b5d4a7e9c2d1f4a8b6e5c3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerVisualFeedback
+  targetRenderer: {fileID: 1967809147}
+  playerData: {fileID: 1967809150}
+  damageFlashColor: {r: 1, g: 0.35, b: 0.35, a: 1}
+  damageFlashDuration: 0.12
+  pickupFlashColor: {r: 0.4, g: 1, b: 0.55, a: 1}
+  pickupFlashDuration: 0.18
+  invulnerableTint: {r: 0.45, g: 0.85, b: 1, a: 1}
+  invulnerabilityBlinkHalfPeriod: 0.12
 --- !u!1 &887002001
 GameObject:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ public class BonusPickup : MonoBehaviour
     {
         var c = GetComponent<Collider>();
         c.isTrigger = true;
+        
     }
 
     private void Awake()

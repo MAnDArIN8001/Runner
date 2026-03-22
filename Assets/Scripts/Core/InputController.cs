@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+
 public class InputController : MonoBehaviour
 {
     private MainInput inputActions;
@@ -14,6 +16,7 @@ public class InputController : MonoBehaviour
         inputActions.Controls.MoveRight.started += OnMoveRight;
         inputActions.Controls.MoveLeft.started += OnMoveLeft;
         inputActions.Controls.Jump.started += OnJump;
+        inputActions.Controls.Pause.started += OnPause;
     }
     
     private void OnDisable()
@@ -21,6 +24,7 @@ public class InputController : MonoBehaviour
         inputActions.Controls.MoveRight.started -= OnMoveRight;
         inputActions.Controls.MoveLeft.started -= OnMoveLeft;
         inputActions.Controls.Jump.started -= OnJump;
+        inputActions.Controls.Pause.started -= OnPause;
         inputActions.Controls.Disable();
     }
     
@@ -46,5 +50,11 @@ public class InputController : MonoBehaviour
     {
         Debug.Log("Jump input");
         PlayerController.Instance?.Jump();
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        if (GameManager.Instance != null)
+            GameManager.Instance.TryTogglePauseFromInput();
     }
 }

@@ -54,8 +54,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        HandleEscapeForPause();
-
         if (!isGameRunning || isGamePaused)
             return;
 
@@ -71,11 +69,9 @@ public class GameManager : MonoBehaviour
         GameEvents.InvokeScoreChanged(score);
     }
 
-    private void HandleEscapeForPause()
+    /// <summary>Called from Input System (e.g. ESC) — cannot use UnityEngine.Input when active input is Input System only.</summary>
+    public void TryTogglePauseFromInput()
     {
-        if (!Input.GetKeyDown(KeyCode.Escape))
-            return;
-
         if (flowState == GameFlowState.Playing)
             PauseGame();
         else if (flowState == GameFlowState.Paused)
